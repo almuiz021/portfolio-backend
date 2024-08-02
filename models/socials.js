@@ -12,3 +12,5 @@ const Socials = sequelize.define('socials', {
   socialMediaLogo: DataTypes.STRING,
   socialMediaURL: DataTypes.STRING,
 });
+
+module.exports = Socials;

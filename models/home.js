@@ -14,3 +14,5 @@ const Home = sequelize.define('home', {
   myRole: DataTypes.STRING,
   heroName: DataTypes.STRING,
 });
+
+module.exports = Home;
