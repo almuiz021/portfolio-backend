@@ -1,5 +1,18 @@
 const Users = require('../models/users');
 
+exports.CheckUserName = async (req, res, next, val) => {
+  const id = req.params.id;
+  const user = await Users.findOne({ where: { username: id } });
+
+  if (!user) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'User Not Found',
+    });
+  }
+  next();
+};
+
 // /api/test/users
 exports.getAllUsers = async (req, res, next) => {
   try {
@@ -56,7 +69,14 @@ exports.getUserbyName = async (req, res) => {
   const id = req.params.id;
   try {
     const user = await Users.findOne({ where: { username: id } });
-    console.log(user);
+
+    if (!user) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'User Not Found',
+      });
+    }
+
     res.status(200).json({
       status: 'success',
       route: 'getUserbyName',
@@ -76,6 +96,7 @@ exports.getUser = async (req, res) => {
   const id = +req.params.id;
   try {
     const user = await Users.findByPk(id);
+
     res.status(200).json({
       status: 'success',
       route: 'getUser',
@@ -130,6 +151,34 @@ exports.updateUser = async (req, res) => {
     res.status(500).json({
       status: 'error',
       message: 'Server error',
+    });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const user = await Users.findOne({ where: { username: id } });
+
+    if (!user) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'User Not Found',
+      });
+    }
+
+    await user.destroy();
+
+    res.status(204).json({
+      status: 'Success',
+      message: 'User Deleted',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      status: 'fail',
+      message: 'Server Error',
     });
   }
 };

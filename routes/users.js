@@ -3,6 +3,8 @@ const userController = require('../controllers/user');
 
 const router = express.Router();
 
+router.param('id', userController.CheckUserName);
+
 router
   .route('/')
   .get(userController.getAllUsers) //
@@ -11,8 +13,8 @@ router
 router
   .route('/:id')
   .get(userController.getUserbyName)
-  .patch(userController.updateUser);
-// .delete(userController.deleteUser);
+  .patch(userController.updateUser)
+  .delete(userController.deleteUser);
 
 // router.route('/:id').get(userController.getUser);
 
