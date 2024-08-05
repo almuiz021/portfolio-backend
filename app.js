@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
 const sequelize = require('./utils/database');
 
@@ -13,20 +14,22 @@ const Projects = require('./models/projects');
 const Home = require('./models/home');
 const Experience = require('./models/experience');
 
+const userRoutes = require('./routes/users');
+const dataRoutes = require('./routes/data');
+
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.json({
-    status: 'success',
-    data: 'THIS IS GOING ON',
-  });
-});
+app.use(morgan('dev'));
+
+app.use('/api/test/users', userRoutes);
+
+app.use('/api/test/all', dataRoutes);
 
 Users.hasOne(Home);
 Home.belongsTo(Users);
 
-Users.hasMany(Socials);
-Socials.belongsTo(Users);
+Home.hasMany(Socials);
+Socials.belongsTo(Home);
 
 Users.hasOne(AboutMe);
 AboutMe.belongsTo(Users);
@@ -55,8 +58,21 @@ sequelize
   .sync()
   // .sync({ force: true })
   .then(results => {
-    console.log('CREATED TABLES');
-
+    return Users.findByPk(1);
+  })
+  .then(user => {
+    if (!user) {
+      return Users.create({
+        first_name: 'Abdulmuiz',
+        last_name: 'Ghori',
+        username: 'muiz',
+        email: 'almuiz@gmail.com',
+        password: '123456',
+      });
+    }
+    return user;
+  })
+  .then(user => {
     app.listen(port);
   })
   .catch(err => {
