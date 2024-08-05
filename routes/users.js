@@ -3,7 +3,7 @@ const userController = require('../controllers/user');
 
 const router = express.Router();
 
-router.param('id', userController.CheckUserName);
+// router.param('id', userController.CheckUserName);
 
 router
   .route('/')
