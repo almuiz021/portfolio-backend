@@ -1,18 +1,5 @@
 const Users = require('../models/users');
 
-exports.CheckUserName = async (req, res, next, val) => {
-  const id = req.params.id;
-  const user = await Users.findOne({ where: { username: id } });
-
-  if (!user) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'User Not Found',
-    });
-  }
-  next();
-};
-
 // /api/test/users
 exports.getAllUsers = async (req, res, next) => {
   try {
@@ -64,11 +51,12 @@ exports.createUser = async (req, res, next) => {
   }
 };
 
-// /api/test/users/muiz
-exports.getUserbyName = async (req, res) => {
-  const id = req.params.id;
+// /CHECK USERNAME
+exports.checkUserExists = async (req, res, next, val) => {
+  const username = req.params.id;
+  console.log(username);
   try {
-    const user = await Users.findOne({ where: { username: id } });
+    const user = await Users.findOne({ where: { username } });
 
     if (!user) {
       return res.status(404).json({
@@ -77,11 +65,8 @@ exports.getUserbyName = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      status: 'success',
-      route: 'getUserbyName',
-      data: user,
-    });
+    req.user = user;
+    next();
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -91,38 +76,20 @@ exports.getUserbyName = async (req, res) => {
   }
 };
 
-// /api/test/users/1
-exports.getUser = async (req, res) => {
-  const id = +req.params.id;
-  try {
-    const user = await Users.findByPk(id);
-
-    res.status(200).json({
-      status: 'success',
-      route: 'getUser',
-      data: user,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      status: 'error',
-      message: 'Server error',
-    });
-  }
+// /api/test/users/muiz
+exports.getUserbyName = (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    route: 'getUserbyName',
+    data: req.user,
+  });
 };
 
 exports.updateUser = async (req, res) => {
-  const id = req.params.id;
   const { first_name, last_name, username, email, password } = req.body;
 
   try {
-    const user = await Users.findOne({ where: { username: id } });
-    if (!user) {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'User Not Found',
-      });
-    }
+    const user = req.user;
 
     if (username && username !== user.username) {
       const existingUser = await Users.findOne({ where: { username } });
@@ -156,29 +123,32 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
-  const id = req.params.id;
+  const user = req.user;
 
+  await user.destroy();
+
+  res.status(204).json({
+    status: 'Success',
+    message: 'User Deleted',
+  });
+};
+
+// /api/test/users/1
+exports.getUser = async (req, res) => {
+  const id = +req.params.id;
   try {
-    const user = await Users.findOne({ where: { username: id } });
+    const user = await Users.findByPk(id);
 
-    if (!user) {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'User Not Found',
-      });
-    }
-
-    await user.destroy();
-
-    res.status(204).json({
-      status: 'Success',
-      message: 'User Deleted',
+    res.status(200).json({
+      status: 'success',
+      route: 'getUser',
+      data: user,
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      status: 'fail',
-      message: 'Server Error',
+      status: 'error',
+      message: 'Server error',
     });
   }
 };
