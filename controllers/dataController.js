@@ -1,5 +1,12 @@
+const AboutMe = require('../models/aboutme');
+const ContactMe = require('../models/contactme');
+const Duties = require('../models/duties');
+const Experience = require('../models/experience');
 const Home = require('../models/home');
+const Projects = require('../models/projects');
 const Socials = require('../models/socials');
+const TechnicalSkills = require('../models/technicalSkills');
+const TechUsed = require('../models/techused');
 const Users = require('../models/users');
 
 // /api/test/all
@@ -29,12 +36,27 @@ exports.getAllUserData = async (req, res, next) => {
         model: Home,
         include: [Socials],
       },
+      {
+        model: AboutMe,
+        include: [TechnicalSkills],
+      },
+      {
+        model: Experience,
+        include: [Duties],
+      },
+      {
+        model: Projects,
+        include: [TechUsed],
+      },
+      {
+        model: ContactMe,
+      },
     ],
   });
 
   res.status(200).json({
     status: 'success',
     route: 'getAllUserData',
-    data: user,
+    data: [user],
   });
 };

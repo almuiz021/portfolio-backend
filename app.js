@@ -16,14 +16,25 @@ const Experience = require('./models/experience');
 
 const userRoutes = require('./routes/users');
 const dataRoutes = require('./routes/data');
+const CrudRoutes = require('./routes/dataCRUD');
 
 app.use(express.json());
-
 app.use(morgan('dev'));
 
-app.use('/api/test/users', userRoutes);
+app.use(async (req, res, next) => {
+  try {
+    const user = await Users.findByPk(1);
+    req.user = user;
+  } catch (error) {
+    console.log(error);
+  }
 
+  next();
+});
+
+app.use('/api/test/users', userRoutes);
 app.use('/api/test/all', dataRoutes);
+app.use('/api/test/add/home', CrudRoutes);
 
 Users.hasOne(Home);
 Home.belongsTo(Users);
@@ -34,12 +45,13 @@ Socials.belongsTo(Home);
 Users.hasOne(AboutMe);
 AboutMe.belongsTo(Users);
 
-Users.hasMany(TechnicalSkills);
-TechnicalSkills.belongsTo(Users);
+AboutMe.hasMany(TechnicalSkills);
+TechnicalSkills.belongsTo(AboutMe);
 
 Users.hasMany(Experience);
 Experience.belongsTo(Users);
 
+Users.hasMany(Duties);
 Experience.hasMany(Duties);
 Duties.belongsTo(Experience);
 
