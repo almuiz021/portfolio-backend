@@ -52,7 +52,10 @@ exports.updateExp = async (req, res) => {
       const { companyName, started, finished, designation, id, duties } = exp;
 
       const existingExp = await Experience.findOne({
-        where: { id, userId: req.user.id },
+        where: {
+          id,
+          userId: req.user.id,
+        },
       });
 
       if (existingExp) {
@@ -63,18 +66,20 @@ exports.updateExp = async (req, res) => {
 
         await existingExp.save();
 
-        for (const dutyObj of duties) {
-          const myDuty = await Duties.findOne({
-            where: {
-              id: dutyObj.id,
-              experienceId: existingExp.id,
-            },
-          });
+        if (duties && duties.length > 0) {
+          for (const dutyObj of duties) {
+            const myDuty = await Duties.findOne({
+              where: {
+                id: dutyObj.id,
+                experienceId: existingExp.id,
+              },
+            });
 
-          await myDuty.update({
-            duty: dutyObj.duty,
-            experienceId: existingExp.id,
-          });
+            await myDuty.update({
+              duty: dutyObj.duty,
+              experienceId: existingExp.id,
+            });
+          }
         }
       }
     }

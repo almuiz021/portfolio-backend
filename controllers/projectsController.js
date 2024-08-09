@@ -14,12 +14,14 @@ exports.createProjects = async (req, res) => {
         projectURL,
       });
 
-      for (const techsObj of techuseds) {
-        const { tech } = techsObj;
-        const myTechUsed = myProjects.createTechused({
-          tech,
-          projectId: myProjects.id,
-        });
+      if (techuseds && techuseds.length > 0) {
+        for (const techsObj of techuseds) {
+          const { tech } = techsObj;
+          const myTechUsed = myProjects.createTechused({
+            tech,
+            projectId: myProjects.id,
+          });
+        }
       }
     }
     const data = await Projects.findAll({
@@ -66,18 +68,20 @@ exports.updateProjects = async (req, res) => {
 
       await myExistingProject.save();
 
-      for (const techObj of techuseds) {
-        const myTechs = await TechUsed.findOne({
-          where: {
-            id: myTechs.id,
-            projectId: myExistingProject.id,
-          },
-        });
+      if (techuseds && techuseds.length > 0) {
+        for (const techObj of techuseds) {
+          const myTechs = await TechUsed.findOne({
+            where: {
+              id: techObj.id,
+              projectId: myExistingProject.id,
+            },
+          });
 
-        await myTechs.update({
-          tech: techObj.tech,
-          projectId: myExistingProject.id,
-        });
+          await myTechs.update({
+            tech: techObj.tech,
+            projectId: myExistingProject.id,
+          });
+        }
       }
     }
     const updatedProj = await Projects.findAll({

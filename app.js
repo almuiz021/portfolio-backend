@@ -22,6 +22,7 @@ const aboutMeRoutes = require('./routes/aboutmeRoutes');
 const skillsRoutes = require('./routes/skillsRoutes');
 const expRoutes = require('./routes/experiencesRoutes');
 const projectsRoutes = require('./routes/projectsRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
 app.use(express.json());
 app.use(morgan('dev'));
@@ -45,6 +46,7 @@ app.use('/api/test/aboutme', aboutMeRoutes);
 app.use('/api/test/skills', skillsRoutes);
 app.use('/api/test/experience', expRoutes);
 app.use('/api/test/projects', projectsRoutes);
+app.use('/api/test/contactme', contactRoutes);
 
 Users.hasOne(Home);
 Home.belongsTo(Users);
