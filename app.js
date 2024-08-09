@@ -8,7 +8,7 @@ const AboutMe = require('./models/aboutme');
 const ContactMe = require('./models/contactme');
 const Duties = require('./models/duties');
 const TechUsed = require('./models/techused');
-const TechnicalSkills = require('./models/technicalSkills');
+const TechnicalSkills = require('./models/technicalskills');
 const Socials = require('./models/socials');
 const Projects = require('./models/projects');
 const Home = require('./models/home');
@@ -16,7 +16,12 @@ const Experience = require('./models/experience');
 
 const userRoutes = require('./routes/users');
 const dataRoutes = require('./routes/data');
-const CrudRoutes = require('./routes/dataCRUD');
+const socialsRoutes = require('./routes/socialsRoutes');
+const homeRoutes = require('./routes/homeRoutes');
+const aboutMeRoutes = require('./routes/aboutmeRoutes');
+const skillsRoutes = require('./routes/skillsRoutes');
+const expRoutes = require('./routes/experiencesRoutes');
+const projectsRoutes = require('./routes/projectsRoutes');
 
 app.use(express.json());
 app.use(morgan('dev'));
@@ -34,7 +39,12 @@ app.use(async (req, res, next) => {
 
 app.use('/api/test/users', userRoutes);
 app.use('/api/test/all', dataRoutes);
-app.use('/api/test/add/home', CrudRoutes);
+app.use('/api/test/home', homeRoutes);
+app.use('/api/test/socials', socialsRoutes);
+app.use('/api/test/aboutme', aboutMeRoutes);
+app.use('/api/test/skills', skillsRoutes);
+app.use('/api/test/experience', expRoutes);
+app.use('/api/test/projects', projectsRoutes);
 
 Users.hasOne(Home);
 Home.belongsTo(Users);
@@ -54,6 +64,7 @@ Experience.belongsTo(Users);
 Users.hasMany(Duties);
 Experience.hasMany(Duties);
 Duties.belongsTo(Experience);
+Duties.belongsTo(Users);
 
 Users.hasMany(Projects);
 Projects.belongsTo(Users);

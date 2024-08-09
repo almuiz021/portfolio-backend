@@ -1,3 +1,5 @@
+const Home = require('../models/home');
+
 exports.addHome = async (req, res) => {
   const { logoImgURL, logoTextURL, heroImageURL, myRole, heroName } = req.body;
 
@@ -22,37 +24,42 @@ exports.addHome = async (req, res) => {
     });
   }
 };
+
 exports.updateHome = async (req, res) => {
   const { logoImgURL, logoTextURL, heroImageURL, myRole, heroName } = req.body;
 
   try {
-    const home = Users.getHome();
+    const myHome = req.user.getHome();
 
-    if (!home) {
+    if (!myHome) {
       res.status(404).json({
         status: 'Fail',
         message: 'Home Not Found',
       });
     }
+    const updatedFields = {
+      logoImgURL: logoImgURL || myHome.logoImgURL,
+      logoTextURL: logoTextURL || myHome.logoTextURL,
+      heroImageURL: heroImageURL || myHome.heroImageURL,
+      myRole: myRole || myHome.myRole,
+      heroName: heroName || myHome.heroName,
+    };
 
-    home.logoImgURL = logoImgURL;
-    home.logoTextURL = logoTextURL;
-    home.heroImageURL = heroImageURL;
-    home.myRole = myRole;
-    home.heroName = heroName;
+    await Home.update(updatedFields, { where: { userId: req.user.id } });
 
-    myUpdatedHome = await home.save();
+    const updatedHome = await Home.findByPk(req.user.id);
 
     res.status(200).json({
       status: 'success',
-      message: 'Data Created',
-      data: myUpdatedHome,
+      message: 'Data Updated',
+      data: updatedHome,
     });
   } catch (error) {
     console.log(error);
     res.status(400).json({
       status: 'fail',
       message: 'Error Updating Home Data',
+      data: req.body,
     });
   }
 };
