@@ -8,4 +8,8 @@ router
   .post(skillsController.createSkills) //
   .patch(skillsController.updateSkills);
 
+router
+  .route('/:id') //
+  .delete(skillsController.deleteSkills);
+
 module.exports = router;

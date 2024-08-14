@@ -8,4 +8,8 @@ router
   .post(socialsController.addSocials) //
   .patch(socialsController.updateSocials);
 
+router
+  .route('/:id') //
+  .delete(socialsController.deleteSocial);
+
 module.exports = router;

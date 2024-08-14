@@ -1,3 +1,4 @@
+const Home = require('../models/home');
 const Socials = require('../models/socials');
 
 exports.addSocials = async (req, res) => {
@@ -93,6 +94,33 @@ exports.updateSocials = async (req, res) => {
     res.status(400).json({
       status: 'fail',
       data: error,
+    });
+  }
+};
+
+exports.deleteSocial = async (req, res) => {
+  const id = +req.params.id;
+
+  try {
+    const home = await Home.findOne({
+      where: { userId: req.user.id },
+      attributes: ['id'],
+    });
+    const mySocial = await Socials.findOne({
+      where: { homeId: home.id, id },
+    });
+
+    await mySocial.destroy();
+
+    await res.status(204).json({
+      status: 'Success',
+      message: 'Deleted social ',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: 'Fail',
+      message: 'Cannot Delete Socials ',
     });
   }
 };

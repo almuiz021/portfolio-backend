@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const Projects = require('../models/projects');
 const TechUsed = require('../models/techused');
 
@@ -99,6 +100,70 @@ exports.updateProjects = async (req, res) => {
     return res.status(404).json({
       status: 'Fail',
       message: 'Unable to Update Projects',
+    });
+  }
+};
+
+exports.getAllProjects = async (req, res) => {
+  try {
+    const myProjects = await req.user.getProjects({
+      include: { model: TechUsed },
+    });
+    res.status(200).json({
+      status: 'Success',
+      message: 'Fetched all Projects',
+      data: myProjects,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: 'Fail',
+      message: 'Cannot Get Projects',
+    });
+  }
+};
+
+exports.getProject = async (req, res) => {
+  const projID = +req.params.id;
+  try {
+    const myProject = await req.user.getProjects({
+      where: { id: projID },
+      include: { model: TechUsed },
+    });
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Fetched project',
+      data: myProject,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: 'Fail',
+      message: 'Cannot Get Projects',
+    });
+  }
+};
+
+exports.deleteProject = async (req, res) => {
+  const projID = +req.params.id;
+  try {
+    const [myProject] = await req.user.getProjects({
+      where: { id: projID },
+      include: { model: TechUsed },
+    });
+
+    await myProject.destroy();
+
+    res.status(204).json({
+      status: 'Success',
+      message: 'deleted project',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: 'Fail',
+      message: 'Cannot delete Project',
     });
   }
 };

@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const Duties = require('../models/duties');
 const Experience = require('../models/experience');
 
@@ -99,6 +100,69 @@ exports.updateExp = async (req, res) => {
     return res.status(404).json({
       status: 'Fail',
       message: 'Unable to Update Experiences',
+    });
+  }
+};
+
+exports.getAllExp = async (req, res) => {
+  try {
+    const myExp = await req.user.getExperiences();
+    res.status(200).json({
+      status: 'Success',
+      message: 'Got Experciences',
+      data: myExp,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({
+      status: 'Fail',
+      message: 'Unable to Get Experiences',
+    });
+  }
+};
+
+exports.deleteExp = async (req, res) => {
+  const expID = +req.params.id;
+  try {
+    const myExp = await req.user.getExperiences({
+      where: { id: expID },
+      include: { model: Duties },
+    });
+
+    const experience = myExp[0];
+    await experience.destroy();
+
+    res.status(204).json({
+      status: 'Success',
+      message: 'Deleted',
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({
+      status: 'Fail',
+      message: 'Unable to Delete Experiences',
+    });
+  }
+};
+
+exports.getExp = async (req, res) => {
+  const expID = +req.params.id;
+  try {
+    const myExp = await req.user.getExperiences({
+      where: { id: expID },
+      include: { model: Duties },
+    });
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Got Experience',
+      data: myExp,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({
+      status: 'Fail',
+      message: 'Unable to Get Experiences',
     });
   }
 };

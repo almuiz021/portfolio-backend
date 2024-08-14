@@ -15,7 +15,7 @@ exports.createSkills = async (req, res) => {
 
     const skillsInstance = [];
     for (const skill of skills) {
-      const myNewSkill = await req.user.createTechnicalSkills({
+      const myNewSkill = await TechnicalSkills.create({
         ...skill,
         AboutMeId: myAboutMe.id,
       });
@@ -70,6 +70,34 @@ exports.updateSkills = async (req, res) => {
     return res.status(404).json({
       status: 'Fail',
       message: 'Cannot Update Skills',
+    });
+  }
+};
+
+exports.deleteSkills = async (req, res) => {
+  const id = +req.params.id;
+
+  try {
+    const aboutMe = await AboutMe.findOne({
+      where: { userId: req.user.id },
+      attributes: ['id'],
+    });
+
+    const mySkill = await TechnicalSkills.findOne({
+      where: { AboutMeId: aboutMe.id, id },
+    });
+
+    await mySkill.destroy();
+
+    await res.status(204).json({
+      status: 'Success',
+      message: 'Deleted Skill ',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: 'Fail',
+      message: 'Cannot Delete Socials ',
     });
   }
 };

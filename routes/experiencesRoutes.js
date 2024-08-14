@@ -6,6 +6,12 @@ const expController = require('../controllers/expController');
 router
   .route('/')
   .post(expController.createExp) //
-  .patch(expController.updateExp);
+  .patch(expController.updateExp)
+  .get(expController.getAllExp);
+
+router
+  .route('/:id')
+  .get(expController.getExp) //
+  .delete(expController.deleteExp);
 
 module.exports = router;
