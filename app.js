@@ -14,6 +14,7 @@ const Projects = require('./models/projects');
 const Home = require('./models/home');
 const Experience = require('./models/experience');
 
+const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/users');
 const dataRoutes = require('./routes/data');
 const socialsRoutes = require('./routes/socialsRoutes');
@@ -38,6 +39,7 @@ app.use(async (req, res, next) => {
   next();
 });
 
+app.use('/api/test/auth', authRoutes);
 app.use('/api/test/users', userRoutes);
 app.use('/api/test/all', dataRoutes);
 app.use('/api/test/home', homeRoutes);
