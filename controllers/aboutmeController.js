@@ -56,3 +56,40 @@ exports.updateAboutMe = async (req, res) => {
     });
   }
 };
+
+exports.deleteAboutMe = async (req, res) => {
+  try {
+    const myAboutMe = await req.user.getAboutMe();
+
+    await myAboutMe.destroy();
+
+    res.status(204).json({
+      status: 'Success',
+      message: 'Deleted About Me',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: 'Fail',
+      message: 'Cannot Delete About Me',
+    });
+  }
+};
+
+exports.getAboutMe = async (req, res) => {
+  try {
+    const myAboutMe = await req.user.getAboutMe();
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Got About Me',
+      data: myAboutMe,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: 'Fail',
+      message: 'Cannot Get About Me',
+    });
+  }
+};

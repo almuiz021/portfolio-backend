@@ -64,4 +64,39 @@ exports.updateHome = async (req, res) => {
   }
 };
 
-exports.deleteHome = async (req, res) => {};
+exports.deleteHome = async (req, res) => {
+  try {
+    const myHome = await req.user.getHome();
+
+    await myHome.destroy();
+
+    res.status(204).json({
+      status: 'Success',
+      message: 'Deleted Home',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: 'Fail',
+      message: 'Cannot Delete About Me',
+    });
+  }
+};
+
+exports.getHome = async (req, res) => {
+  try {
+    const myHome = await req.user.getHome();
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Got About Me',
+      data: myHome,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: 'Fail',
+      message: 'Cannot Get About Me',
+    });
+  }
+};

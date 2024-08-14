@@ -58,3 +58,44 @@ exports.updateContacts = async (req, res) => {
     });
   }
 };
+
+exports.getContacts = async (req, res) => {
+  try {
+    const myContactMe = await ContactMe.findOne({
+      where: { userId: req.user.id },
+    });
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Got About Me',
+      data: myContactMe,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: 'Fail',
+      message: 'Cannot Get ContactMe',
+    });
+  }
+};
+
+exports.deleteContacts = async (req, res) => {
+  try {
+    const myContactMe = await ContactMe.findOne({
+      where: { userId: req.user.id },
+    });
+
+    await myContactMe.destroy();
+
+    res.status(204).json({
+      status: 'Success',
+      message: 'Deleted Contact Me',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: 'Fail',
+      message: 'Cannot Delete Contact Me',
+    });
+  }
+};

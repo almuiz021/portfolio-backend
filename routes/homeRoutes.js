@@ -5,7 +5,9 @@ const homeController = require('../controllers/homeController');
 
 router
   .route('/')
+  .get(homeController.getHome)
   .post(homeController.addHome) //
-  .patch(homeController.updateHome);
+  .patch(homeController.updateHome)
+  .delete(homeController.deleteHome);
 
 module.exports = router;
