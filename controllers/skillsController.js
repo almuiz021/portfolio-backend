@@ -42,15 +42,13 @@ exports.updateSkills = async (req, res) => {
     const myAboutMe = await req.user.getAboutMe();
 
     for (const mySkill of skills) {
-      const { skillIconURL, skillTitle, id } = mySkill;
+      const { skillTitle, id } = mySkill;
       const existingSkills = await TechnicalSkills.findOne({
         where: { id, AboutMeId: myAboutMe.id },
       });
 
       if (existingSkills) {
-        (existingSkills.skillIconURL =
-          skillIconURL || existingSkills.skillIconURL),
-          (existingSkills.skillTitle = skillTitle || existingSkills.skillTitle);
+        existingSkills.skillTitle = skillTitle || existingSkills.skillTitle;
 
         await existingSkills.save();
       }

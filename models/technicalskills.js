@@ -8,7 +8,7 @@ const TechnicalSkills = sequelize.define('technicalskills', {
     autoIncrement: true,
     allowNull: false,
   },
-  skillIconURL: DataTypes.STRING,
+  // skillIconURL: DataTypes.STRING,
   skillTitle: DataTypes.STRING,
 });
 
