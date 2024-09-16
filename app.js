@@ -1,7 +1,13 @@
 const express = require('express');
 const morgan = require('morgan');
+const dotenv = require('dotenv');
+const cors = require('cors');
+
 const app = express();
+app.use(cors());
 const sequelize = require('./utils/database');
+
+dotenv.config({ path: './config.env' });
 
 const Users = require('./models/users');
 const AboutMe = require('./models/aboutme');
@@ -27,17 +33,6 @@ const contactRoutes = require('./routes/contactRoutes');
 
 app.use(express.json());
 app.use(morgan('dev'));
-
-app.use(async (req, res, next) => {
-  try {
-    const user = await Users.findByPk(1);
-    req.user = user;
-  } catch (error) {
-    console.log(error);
-  }
-
-  next();
-});
 
 app.use('/api/test/auth', authRoutes);
 app.use('/api/test/users', userRoutes);
@@ -79,26 +74,11 @@ TechUsed.belongsTo(Projects);
 Users.hasOne(ContactMe);
 ContactMe.belongsTo(Users);
 
-const port = 8000;
+const port = process.env.PORT;
 
 sequelize
   .sync()
   // .sync({ force: true })
-  .then(results => {
-    return Users.findByPk(1);
-  })
-  .then(user => {
-    if (!user) {
-      return Users.create({
-        first_name: 'Abdulmuiz',
-        last_name: 'Ghori',
-        username: 'muiz',
-        email: 'almuiz@gmail.com',
-        password: '123456',
-      });
-    }
-    return user;
-  })
   .then(user => {
     app.listen(port);
   })

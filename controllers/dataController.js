@@ -5,7 +5,7 @@ const Experience = require('../models/experience');
 const Home = require('../models/home');
 const Projects = require('../models/projects');
 const Socials = require('../models/socials');
-const TechnicalSkills = require('../models/technicalSkills');
+const TechnicalSkills = require('../models/technicalskills');
 const TechUsed = require('../models/techused');
 const Users = require('../models/users');
 

@@ -26,6 +26,11 @@ const Users = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    role: {
+      type: DataTypes.ENUM('user', 'admin'),
+      allowNull: false,
+      defaultValue: 'user',
+    },
   },
   {
     hooks: {
@@ -42,5 +47,9 @@ const Users = sequelize.define(
     },
   },
 );
+
+Users.prototype.validPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 
 module.exports = Users;
