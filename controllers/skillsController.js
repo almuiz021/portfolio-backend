@@ -48,6 +48,8 @@ exports.updateSkills = async (req, res) => {
       });
 
       if (existingSkills) {
+        // (existingSkills.skillIconURL =
+        //   skillIconURL || existingSkills.skillIconURL),
         existingSkills.skillTitle = skillTitle || existingSkills.skillTitle;
 
         await existingSkills.save();
