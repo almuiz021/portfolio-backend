@@ -2,16 +2,17 @@ const express = require('express');
 const router = express.Router();
 
 const expController = require('../controllers/expController');
+const { protect } = require('../controllers/authController');
 
 router
   .route('/')
-  .post(expController.createExp) //
-  .patch(expController.updateExp)
-  .get(expController.getAllExp);
+  .post(protect, expController.createExp) //
+  .patch(protect, expController.updateExp)
+  .get(protect, expController.getAllExp);
 
 router
   .route('/:id')
-  .get(expController.getExp) //
-  .delete(expController.deleteExp);
+  .get(protect, expController.getExp) //
+  .delete(protect, expController.deleteExp);
 
 module.exports = router;

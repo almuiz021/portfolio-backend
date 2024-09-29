@@ -1,4 +1,3 @@
-const { where } = require('sequelize');
 const Home = require('../models/home');
 const Socials = require('../models/socials');
 
@@ -14,7 +13,7 @@ exports.addHome = async (req, res) => {
       heroName,
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
       message: 'Data Created',
       data: myHome,
@@ -87,16 +86,16 @@ exports.deleteHome = async (req, res) => {
 
 exports.getHome = async (req, res) => {
   try {
-    const myHome = await req.user.getHome({ include: { model: Socials } });
+    const myHome = await req.user.getHome();
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'Success',
       message: 'Got Home ',
       data: myHome,
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({
+    return res.status(404).json({
       status: 'Fail',
       message: 'Cannot Get Home ',
     });

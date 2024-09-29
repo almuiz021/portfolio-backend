@@ -1,7 +1,7 @@
 const Users = require('../models/users');
 
 exports.checkEmail = async (req, res) => {
-  const { email } = req.body;
+  const email = req.params.email;
 
   try {
     if (await Users.findOne({ where: { email } })) {
@@ -25,7 +25,7 @@ exports.checkEmail = async (req, res) => {
 };
 
 exports.checkUsername = async (req, res) => {
-  const { username } = req.body;
+  const username = req.params.username;
 
   try {
     if (await Users.findOne({ where: { username } })) {

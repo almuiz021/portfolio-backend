@@ -3,9 +3,9 @@ const Duties = require('../models/duties');
 const Experience = require('../models/experience');
 
 exports.createExp = async (req, res) => {
-  const { experiences } = req.body;
+  const { experience } = req.body;
   try {
-    for (const exp of experiences) {
+    for (const exp of experience) {
       const { companyName, started, finished, designation, duties } = exp;
 
       const myExp = await req.user.createExperience({
@@ -27,14 +27,22 @@ exports.createExp = async (req, res) => {
       }
     }
 
-    const myAllExp = await req.user.getExperiences({
+    const myAllExp = await Experience.findAll({
+      where: { userId: req.user.id },
       include: { model: Duties },
     });
 
-    res.status(201).json({
-      status: 'Success',
-      message: 'Created Experiences',
-      data: myAllExp,
+    if (myAllExp) {
+      return res.status(201).json({
+        status: 'Success',
+        message: 'Created Experiences',
+        data: myAllExp,
+      });
+    }
+
+    return res.status(404).json({
+      status: 'Fail',
+      message: 'Experience Not Created',
     });
   } catch (error) {
     console.log(error);
@@ -46,10 +54,10 @@ exports.createExp = async (req, res) => {
 };
 
 exports.updateExp = async (req, res) => {
-  const { experiences } = req.body;
+  const { experience } = req.body;
 
   try {
-    for (const exp of experiences) {
+    for (const exp of experience) {
       const { companyName, started, finished, designation, id, duties } = exp;
 
       const existingExp = await Experience.findOne({
@@ -106,12 +114,23 @@ exports.updateExp = async (req, res) => {
 
 exports.getAllExp = async (req, res) => {
   try {
-    const myExp = await req.user.getExperiences();
-    res.status(200).json({
-      status: 'Success',
-      message: 'Got Experciences',
-      data: myExp,
+    const myAllExp = await Experience.findAll({
+      where: { userId: req.user.id },
+      include: { model: Duties },
     });
+
+    if (myAllExp && myAllExp.length > 0) {
+      return res.status(201).json({
+        status: 'Success',
+        message: 'Created Experiences',
+        data: myAllExp,
+      });
+    }
+
+    // return res.status(404).json({
+    //   status: 'Fail',
+    //   message: 'Experience Not Found',
+    // });
   } catch (error) {
     console.log(error);
     return res.status(404).json({
@@ -124,8 +143,11 @@ exports.getAllExp = async (req, res) => {
 exports.deleteExp = async (req, res) => {
   const expID = +req.params.id;
   try {
-    const myExp = await req.user.getExperiences({
-      where: { id: expID },
+    const myExp = await Experience.findAll({
+      where: {
+        userId: req.user.id,
+        id: expID,
+      },
       include: { model: Duties },
     });
 

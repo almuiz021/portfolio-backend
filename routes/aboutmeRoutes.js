@@ -1,13 +1,14 @@
 const express = require('express');
 const aboutmeController = require('../controllers/aboutmeController');
+const { protect } = require('../controllers/authController');
 
 const router = express.Router();
 
 router
   .route('/') //
-  .get(aboutmeController.getAboutMe)
-  .post(aboutmeController.createAboutMe)
-  .patch(aboutmeController.updateAboutMe)
-  .delete(aboutmeController.deleteAboutMe);
+  .get(protect, aboutmeController.getAboutMe)
+  .post(protect, aboutmeController.createAboutMe)
+  .patch(protect, aboutmeController.updateAboutMe)
+  .delete(protect, aboutmeController.deleteAboutMe);
 
 module.exports = router;

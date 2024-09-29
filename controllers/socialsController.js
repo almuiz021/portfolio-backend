@@ -49,7 +49,7 @@ exports.updateSocials = async (req, res) => {
     }
 
     for (const social of socials) {
-      const { socialMediaName, socialMediaLogo, socialMediaURL, id } = social;
+      const { socialMediaName, socialMediaURL, id } = social;
       if (id) {
         const existingSocial = await Socials.findOne({
           where: { id, homeId: myHome.id },
@@ -58,8 +58,8 @@ exports.updateSocials = async (req, res) => {
         if (existingSocial) {
           (existingSocial.socialMediaName =
             socialMediaName || existingSocial.socialMediaName),
-            (existingSocial.socialMediaLogo =
-              socialMediaLogo || existingSocial.socialMediaLogo),
+            // (existingSocial.socialMediaLogo =
+            //   socialMediaLogo || existingSocial.socialMediaLogo),
             (existingSocial.socialMediaURL =
               socialMediaURL || existingSocial.socialMediaURL);
 
@@ -121,6 +121,35 @@ exports.deleteSocial = async (req, res) => {
     res.status(404).json({
       status: 'Fail',
       message: 'Cannot Delete Socials ',
+    });
+  }
+};
+
+exports.getSocials = async (req, res) => {
+  try {
+    const myHome = await Home.findOne({ where: { userId: req.user.id } });
+
+    const mySocials = await Socials.findAll({
+      where: { homeId: myHome.id },
+    });
+
+    if (mySocials && mySocials.length > 0) {
+      return res.status(200).json({
+        status: 'Success',
+        message: 'Fetched Socials of the User',
+        data: mySocials,
+      });
+    }
+
+    return res.status(404).json({
+      status: 'Fail',
+      message: 'No Socials available',
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({
+      status: 'Fail',
+      message: 'Failed to Get Socials',
     });
   }
 };

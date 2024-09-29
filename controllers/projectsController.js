@@ -1,4 +1,3 @@
-const { where } = require('sequelize');
 const Projects = require('../models/projects');
 const TechUsed = require('../models/techused');
 
@@ -109,10 +108,18 @@ exports.getAllProjects = async (req, res) => {
     const myProjects = await req.user.getProjects({
       include: { model: TechUsed },
     });
-    res.status(200).json({
-      status: 'Success',
-      message: 'Fetched all Projects',
-      data: myProjects,
+
+    if (myProjects && myProjects.length > 0) {
+      return res.status(200).json({
+        status: 'Success',
+        message: 'Fetched all Projects',
+        data: myProjects,
+      });
+    }
+
+    return res.status(404).json({
+      status: 'Fail',
+      message: 'No Projects Available',
     });
   } catch (error) {
     console.log(error);

@@ -2,16 +2,17 @@ const express = require('express');
 
 const router = express.Router();
 const projectsController = require('../controllers/projectsController');
+const { protect } = require('../controllers/authController');
 
 router
   .route('/') //
-  .post(projectsController.createProjects)
-  .patch(projectsController.updateProjects)
-  .get(projectsController.getAllProjects);
+  .post(protect, projectsController.createProjects)
+  .patch(protect, projectsController.updateProjects)
+  .get(protect, projectsController.getAllProjects);
 
 router
   .route('/:id') //
-  .get(projectsController.getProject)
-  .delete(projectsController.deleteProject);
+  .get(protect, projectsController.getProject)
+  .delete(protect, projectsController.deleteProject);
 
 module.exports = router;

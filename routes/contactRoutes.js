@@ -2,11 +2,13 @@ const express = require('express');
 
 const router = express.Router();
 const contactMeController = require('../controllers/contactMeController');
+const { protect } = require('../controllers/authController');
+
 router
   .route('/')
-  .post(contactMeController.createContacts) //
-  .patch(contactMeController.updateContacts)
-  .get(contactMeController.getContacts)
-  .delete(contactMeController.deleteContacts);
+  .get(protect, contactMeController.getContacts)
+  .post(protect, contactMeController.createContacts) //
+  .patch(protect, contactMeController.updateContacts)
+  .delete(protect, contactMeController.deleteContacts);
 
 module.exports = router;

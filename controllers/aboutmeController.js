@@ -1,3 +1,6 @@
+const AboutMe = require('../models/aboutme');
+const TechnicalSkills = require('../models/technicalskills');
+
 exports.createAboutMe = async (req, res) => {
   try {
     const { myImageURL, currentJob, jobDescription } = req.body;
@@ -78,16 +81,26 @@ exports.deleteAboutMe = async (req, res) => {
 
 exports.getAboutMe = async (req, res) => {
   try {
-    const myAboutMe = await req.user.getAboutMe();
+    const myAboutMe = await AboutMe.findOne({
+      where: { userId: req.user.id },
+    });
 
-    res.status(200).json({
-      status: 'Success',
-      message: 'Got About Me',
-      data: myAboutMe,
+    if (myAboutMe) {
+      return res.status(200).json({
+        status: 'Success',
+        message: 'Got About Me',
+        data: myAboutMe,
+      });
+    }
+
+    return res.status(404).json({
+      status: 'Fail',
+      message: 'About Me Not Found',
+      user: req.user,
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({
+    return res.status(404).json({
       status: 'Fail',
       message: 'Cannot Get About Me',
     });

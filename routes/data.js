@@ -1,6 +1,7 @@
 const express = require('express');
 const dataControllers = require('../controllers/dataController');
 const authControllers = require('../controllers/authController');
+const { checkUserExists } = require('../controllers/userController');
 
 const router = express.Router();
 
@@ -14,7 +15,13 @@ router
     dataControllers.getAllData,
   );
 
-router.route('/:id').get(dataControllers.getAllUserData);
+// router
+//   .route('/:id') // User No
+//   .get(dataControllers.getAllUserData);
+
+router
+  .route('/:username') // userName
+  .get(dataControllers.getAllUserDataByUserName);
 // .get(authControllers.protect, dataControllers.getAllUserData);
 
 module.exports = router;

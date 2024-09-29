@@ -3,7 +3,7 @@ const ContactMe = require('../models/contactme');
 exports.createContacts = async (req, res) => {
   const { phoneNo, emailAddress, homeAddress } = req.body;
   try {
-    const myContactMe = await ContactMe.create({
+    await ContactMe.create({
       phoneNo,
       emailAddress,
       homeAddress,
@@ -14,7 +14,7 @@ exports.createContacts = async (req, res) => {
       where: { userId: req.user.id },
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'Success',
       message: 'Created Contacts',
       data: contactMeData,
@@ -45,7 +45,7 @@ exports.updateContacts = async (req, res) => {
       where: { userId: req.user.id },
     });
 
-    res.status(202).json({
+    return res.status(202).json({
       status: 'Success',
       message: 'Updated ContactMe',
       data: updatedData,
@@ -64,12 +64,18 @@ exports.getContacts = async (req, res) => {
     const myContactMe = await ContactMe.findOne({
       where: { userId: req.user.id },
     });
+    if (myContactMe) {
+      return res.status(200).json({
+        status: 'Success',
+        message: 'Got Contact Me',
+        data: myContactMe,
+      });
+    }
 
-    res.status(200).json({
-      status: 'Success',
-      message: 'Got About Me',
-      data: myContactMe,
-    });
+    // return res.status(404).json({
+    //   status: 'Fail',
+    //   message: 'No Contact Me Available ',
+    // });
   } catch (error) {
     console.log(error);
     res.status(404).json({

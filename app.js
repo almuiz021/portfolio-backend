@@ -3,8 +3,13 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true,
+};
+
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 const sequelize = require('./utils/database');
 
 dotenv.config({ path: './config.env' });
@@ -30,6 +35,8 @@ const skillsRoutes = require('./routes/skillsRoutes');
 const expRoutes = require('./routes/experiencesRoutes');
 const projectsRoutes = require('./routes/projectsRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const checkCredRoutes = require('./routes/checkCredRoutes');
+// const educationRoutes= require('./routes/educationRoutes');
 
 app.use(express.json());
 app.use(morgan('dev'));
@@ -44,6 +51,7 @@ app.use('/api/test/skills', skillsRoutes);
 app.use('/api/test/experience', expRoutes);
 app.use('/api/test/projects', projectsRoutes);
 app.use('/api/test/contactme', contactRoutes);
+app.use('/api/test/checkcreds', checkCredRoutes);
 
 Users.hasOne(Home);
 Home.belongsTo(Users);

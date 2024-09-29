@@ -53,7 +53,7 @@ exports.createUser = async (req, res, next) => {
 
 // /CHECK USERNAME
 exports.checkUserExists = async (req, res, next, val) => {
-  const username = req.params.id;
+  const username = req.params.username;
   console.log(username);
   try {
     const user = await Users.findOne({ where: { username } });
@@ -69,7 +69,7 @@ exports.checkUserExists = async (req, res, next, val) => {
     next();
   } catch (error) {
     console.log(error);
-    res.status(500).json({
+    return res.status(500).json({
       status: 'error',
       message: 'Server error',
     });

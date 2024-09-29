@@ -1,15 +1,44 @@
 const AboutMe = require('../models/aboutme');
 const TechnicalSkills = require('../models/technicalskills');
 
+exports.getSkills = async (req, res) => {
+  try {
+    const myAboutMe = await AboutMe.findOne({ where: { userId: req.user.id } });
+
+    const mySkills = await TechnicalSkills.findAll({
+      where: { AboutMeId: myAboutMe.id },
+    });
+
+    if (mySkills && mySkills.length > 0) {
+      return res.status(200).json({
+        status: 'Success',
+        message: 'Fetched Technical Skills of the User',
+        data: mySkills,
+      });
+    }
+
+    return res.status(404).json({
+      status: 'Fail',
+      message: 'No Technical skills available',
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({
+      status: 'Fail',
+      message: 'Failed to Get Technical skills',
+    });
+  }
+};
+
 exports.createSkills = async (req, res) => {
   const { skills } = req.body;
   try {
-    const myAboutMe = await req.user.getAboutMe();
+    const myAboutMe = await AboutMe.findOne({ where: { userId: req.user.id } });
 
     if (!myAboutMe) {
       return res.status(404).json({
         status: 'Fail',
-        message: 'AboutMe Not Available ',
+        message: 'AboutMe Not Available to Create Skills',
       });
     }
 
