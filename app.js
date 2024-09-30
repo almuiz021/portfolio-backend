@@ -24,6 +24,7 @@ const Socials = require('./models/socials');
 const Projects = require('./models/projects');
 const Home = require('./models/home');
 const Experience = require('./models/experience');
+const Educations = require('./models/education');
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/users');
@@ -36,7 +37,7 @@ const expRoutes = require('./routes/experiencesRoutes');
 const projectsRoutes = require('./routes/projectsRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const checkCredRoutes = require('./routes/checkCredRoutes');
-// const educationRoutes= require('./routes/educationRoutes');
+const educationRoutes = require('./routes/educationRoutes');
 
 app.use(express.json());
 app.use(morgan('dev'));
@@ -50,6 +51,7 @@ app.use('/api/test/aboutme', aboutMeRoutes);
 app.use('/api/test/skills', skillsRoutes);
 app.use('/api/test/experience', expRoutes);
 app.use('/api/test/projects', projectsRoutes);
+app.use('/api/test/education', educationRoutes);
 app.use('/api/test/contactme', contactRoutes);
 app.use('/api/test/checkcreds', checkCredRoutes);
 
@@ -79,6 +81,9 @@ Projects.belongsTo(Users);
 Projects.hasMany(TechUsed);
 TechUsed.belongsTo(Projects);
 
+Users.hasMany(Educations);
+Educations.belongsTo(Users);
+
 Users.hasOne(ContactMe);
 ContactMe.belongsTo(Users);
 
@@ -86,6 +91,7 @@ const port = process.env.PORT;
 
 sequelize
   .sync()
+  // .sync({ alter: true })
   // .sync({ force: true })
   .then(user => {
     app.listen(port);

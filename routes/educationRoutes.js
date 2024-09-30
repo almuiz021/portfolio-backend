@@ -10,7 +10,7 @@ router
   .route('/')
   .get(protect, eduController.getAllEducations)
   .post(protect, eduController.createEducation) //
-  .patch(protect, eduController.updateContacts)
-  .delete(protect, eduController.deleteContacts);
+  .patch(protect, eduController.updateEducation);
+// .delete(protect, eduController.deleteContacts);
 
 module.exports = router;

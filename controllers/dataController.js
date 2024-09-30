@@ -1,6 +1,7 @@
 const AboutMe = require('../models/aboutme');
 const ContactMe = require('../models/contactme');
 const Duties = require('../models/duties');
+const Educations = require('../models/education');
 const Experience = require('../models/experience');
 const Home = require('../models/home');
 const Projects = require('../models/projects');
@@ -84,6 +85,9 @@ exports.getAllUserDataByUserName = async (req, res, next) => {
         {
           model: Projects,
           include: [TechUsed],
+        },
+        {
+          model: Educations,
         },
         {
           model: ContactMe,
