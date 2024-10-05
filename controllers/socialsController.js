@@ -73,7 +73,6 @@ exports.updateSocials = async (req, res) => {
       } else {
         await Socials.create({
           socialMediaName,
-          socialMediaLogo,
           socialMediaURL,
           homeId: myHome.id,
         });

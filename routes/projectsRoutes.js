@@ -7,7 +7,7 @@ const { protect } = require('../controllers/authController');
 router
   .route('/') //
   .post(protect, projectsController.createProjects)
-  .patch(protect, projectsController.updateProjects)
+  .patch(protect, projectsController.update_createProjects)
   .get(protect, projectsController.getAllProjects);
 
 router

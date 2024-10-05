@@ -39,27 +39,39 @@ exports.updateEducation = async (req, res) => {
 
   try {
     for (const eachEdu of education) {
-      const { degree, university, yearStarted, yearEnded, course } = eachEdu;
+      const { degree, university, yearStarted, yearEnded, id, course } =
+        eachEdu;
 
-      const myExistingEducation = await Educations.findOne({
-        where: {
+      let myExistingEducation;
+      if (id) {
+        myExistingEducation = await Educations.findOne({
+          where: {
+            userId: req.user.id,
+            id,
+          },
+        });
+
+        if (myExistingEducation) {
+          myExistingEducation.degree = degree || myExistingEducation.degree;
+          myExistingEducation.university =
+            university || myExistingEducation.university;
+          myExistingEducation.yearStarted =
+            yearStarted || myExistingEducation.yearStarted;
+          myExistingEducation.yearEnded =
+            yearEnded || myExistingEducation.yearEnded;
+          myExistingEducation.course = course || myExistingEducation.course;
+          await myExistingEducation.save();
+        }
+      } else {
+        const myEdu = await req.user.createEducation({
+          degree,
+          university,
+          yearStarted,
+          yearEnded,
+          course,
           userId: req.user.id,
-          id,
-        },
-      });
-
-      if (myExistingEducation) {
-        myExistingEducation.degree = degree || myExistingEducation.degree;
-        myExistingEducation.university =
-          university || myExistingEducation.university;
-        myExistingEducation.yearStarted =
-          yearStarted || myExistingEducation.yearStarted;
-        myExistingEducation.yearEnded =
-          yearEnded || myExistingEducation.yearEnded;
-        myExistingEducation.course = course || myExistingEducation.course;
+        });
       }
-
-      await myExistingEducation.save();
     }
     const updatedEdu = await Educations.findAll({
       where: { userId: req.user.id },

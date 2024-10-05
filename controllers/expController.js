@@ -53,6 +53,94 @@ exports.createExp = async (req, res) => {
   }
 };
 
+exports.update_createExp = async (req, res) => {
+  const { experience } = req.body;
+
+  try {
+    for (const exp of experience) {
+      const { companyName, started, finished, designation, id, duties } = exp;
+
+      let existingExp;
+
+      // If ID exists, find the experience and update, otherwise create a new one
+      if (id) {
+        existingExp = await Experience.findOne({
+          where: {
+            id,
+            userId: req.user.id,
+          },
+        });
+
+        if (existingExp) {
+          // Update the existing experience
+          existingExp.companyName = companyName || existingExp.companyName;
+          existingExp.started = started || existingExp.started;
+          existingExp.finished = finished || existingExp.finished;
+          existingExp.designation = designation || existingExp.designation;
+
+          await existingExp.save();
+        }
+      } else {
+        // Create a new experience if no ID is provided
+        existingExp = await Experience.create({
+          companyName,
+          started,
+          finished,
+          designation,
+          userId: req.user.id,
+        });
+      }
+
+      // Handle duties: Update existing ones and create new ones if no ID
+      if (duties && duties.length > 0) {
+        for (const dutyObj of duties) {
+          let myDuty;
+
+          if (dutyObj.id) {
+            myDuty = await Duties.findOne({
+              where: {
+                id: dutyObj.id,
+                experienceId: existingExp.id,
+              },
+            });
+
+            // Update existing duty
+            if (myDuty) {
+              await myDuty.update({
+                duty: dutyObj.duty,
+              });
+            }
+          } else {
+            // Create new duty if no ID is provided
+            await Duties.create({
+              duty: dutyObj.duty,
+              experienceId: existingExp.id,
+            });
+          }
+        }
+      }
+    }
+
+    // Fetch the updated experience list
+    const updatedExper = await Experience.findAll({
+      where: { userId: req.user.id },
+      include: { model: Duties },
+    });
+
+    res.status(201).json({
+      status: 'Success',
+      message: 'Updated Experiences',
+      data: updatedExper,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({
+      status: 'Fail',
+      message: 'Unable to Update Experiences',
+    });
+  }
+};
+
 exports.updateExp = async (req, res) => {
   const { experience } = req.body;
 
@@ -62,7 +150,7 @@ exports.updateExp = async (req, res) => {
 
       const existingExp = await Experience.findOne({
         where: {
-          id,
+          id: id,
           userId: req.user.id,
         },
       });

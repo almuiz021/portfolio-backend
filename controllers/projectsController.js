@@ -43,6 +43,88 @@ exports.createProjects = async (req, res) => {
   }
 };
 
+exports.update_createProjects = async (req, res) => {
+  const { projects } = req.body;
+
+  try {
+    for (const proj of projects) {
+      const { imageURL, title, description, projectURL, id, techuseds } = proj;
+
+      let myExistingProject;
+
+      if (id) {
+        myExistingProject = await Projects.findOne({
+          where: {
+            id,
+            userId: req.user.id,
+          },
+        });
+
+        if (myExistingProject) {
+          myExistingProject.imageURL = imageURL || myExistingProject.imageURL;
+          myExistingProject.title = title || myExistingProject.title;
+          myExistingProject.description =
+            description || myExistingProject.description;
+          myExistingProject.projectURL =
+            projectURL || myExistingProject.projectURL;
+          await myExistingProject.save();
+        }
+      } else {
+        myExistingProject = await Projects.create({
+          imageURL,
+          title,
+          description,
+          projectURL,
+          userId: req.user.id,
+        });
+      }
+
+      if (techuseds && techuseds.length > 0) {
+        for (const techObj of techuseds) {
+          let myTechs;
+
+          if (techObj.id) {
+            myTechs = await TechUsed.findOne({
+              where: {
+                id: techObj.id,
+                projectId: myExistingProject.id,
+              },
+            });
+
+            if (techObj) {
+              await myTechs.update({
+                tech: techObj.tech,
+                projectId: myExistingProject.id,
+              });
+            }
+          } else {
+            await myExistingProject.createTechused({
+              tech: techObj.tech,
+              projectId: myExistingProject.id,
+            });
+          }
+        }
+      }
+    }
+    const updatedProj = await Projects.findAll({
+      where: { userId: req.user.id },
+      include: { model: TechUsed },
+    });
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Updated Projects',
+      data: updatedProj,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({
+      status: 'Fail',
+      message: 'Unable to Update Projects',
+    });
+  }
+};
+
 exports.updateProjects = async (req, res) => {
   const { projects } = req.body;
 

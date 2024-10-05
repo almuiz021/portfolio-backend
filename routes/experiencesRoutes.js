@@ -7,7 +7,7 @@ const { protect } = require('../controllers/authController');
 router
   .route('/')
   .post(protect, expController.createExp) //
-  .patch(protect, expController.updateExp)
+  .patch(protect, expController.update_createExp)
   .get(protect, expController.getAllExp);
 
 router

@@ -2,12 +2,12 @@ const Home = require('../models/home');
 const Socials = require('../models/socials');
 
 exports.addHome = async (req, res) => {
-  const { logoImgURL, logoTextURL, heroImageURL, myRole, heroName } = req.body;
+  const { logoText, heroImageURL, myRole, heroName } = req.body;
 
   try {
     const myHome = await req.user.createHome({
-      logoImgURL,
-      logoTextURL,
+      // logoImgURL,
+      logoText,
       heroImageURL,
       myRole,
       heroName,
@@ -27,7 +27,7 @@ exports.addHome = async (req, res) => {
 };
 
 exports.updateHome = async (req, res) => {
-  const { logoImgURL, logoTextURL, heroImageURL, myRole, heroName } = req.body;
+  const { logoText, heroImageURL, myRole, heroName } = req.body;
 
   try {
     const myHome = req.user.getHome();
@@ -39,8 +39,8 @@ exports.updateHome = async (req, res) => {
       });
     }
     const updatedFields = {
-      logoImgURL: logoImgURL || myHome.logoImgURL,
-      logoTextURL: logoTextURL || myHome.logoTextURL,
+      // logoImgURL: logoImgURL || myHome.logoImgURL,
+      logoText: logoText || myHome.logoText,
       heroImageURL: heroImageURL || myHome.heroImageURL,
       myRole: myRole || myHome.myRole,
       heroName: heroName || myHome.heroName,
