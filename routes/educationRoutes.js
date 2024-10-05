@@ -11,6 +11,9 @@ router
   .get(protect, eduController.getAllEducations)
   .post(protect, eduController.createEducation) //
   .patch(protect, eduController.updateEducation);
-// .delete(protect, eduController.deleteContacts);
+
+router
+  .route('/:id') //
+  .delete(protect, eduController.deleteEducation);
 
 module.exports = router;

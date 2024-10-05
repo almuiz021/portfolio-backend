@@ -3,6 +3,7 @@ const router = express.Router();
 
 const expController = require('../controllers/expController');
 const { protect } = require('../controllers/authController');
+const { deleteDuty } = require('../controllers/dutyController');
 
 router
   .route('/')
@@ -14,5 +15,10 @@ router
   .route('/:id')
   .get(protect, expController.getExp) //
   .delete(protect, expController.deleteExp);
+
+router
+  .route('/duty/:id')
+  // .get(protect, expController.getExp) //
+  .delete(protect, deleteDuty);
 
 module.exports = router;

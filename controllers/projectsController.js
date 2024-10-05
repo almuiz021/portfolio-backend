@@ -20,6 +20,7 @@ exports.createProjects = async (req, res) => {
           const myTechUsed = myProjects.createTechused({
             tech,
             projectId: myProjects.id,
+            userId: req.user.id,
           });
         }
       }
@@ -88,6 +89,7 @@ exports.update_createProjects = async (req, res) => {
               where: {
                 id: techObj.id,
                 projectId: myExistingProject.id,
+                userId: req.user.id,
               },
             });
 
@@ -101,6 +103,7 @@ exports.update_createProjects = async (req, res) => {
             await myExistingProject.createTechused({
               tech: techObj.tech,
               projectId: myExistingProject.id,
+              userId: req.user.id,
             });
           }
         }
@@ -238,9 +241,23 @@ exports.deleteProject = async (req, res) => {
   const projID = +req.params.id;
   try {
     const [myProject] = await req.user.getProjects({
-      where: { id: projID },
+      where: {
+        id: projID,
+        userId: req.user.id,
+      },
       include: { model: TechUsed },
     });
+
+    const [myTechUsedDelete] = await TechUsed.findAll({
+      where: {
+        projectId: projID,
+        userId: req.user.id,
+      },
+    });
+
+    if (myTechUsedDelete) {
+      await myTechUsedDelete.destroy();
+    }
 
     await myProject.destroy();
 

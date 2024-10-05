@@ -115,6 +115,7 @@ exports.update_createExp = async (req, res) => {
             await Duties.create({
               duty: dutyObj.duty,
               experienceId: existingExp.id,
+              userId: req.user.id,
             });
           }
         }
@@ -231,7 +232,7 @@ exports.getAllExp = async (req, res) => {
 exports.deleteExp = async (req, res) => {
   const expID = +req.params.id;
   try {
-    const myExp = await Experience.findAll({
+    const [myExp] = await Experience.findAll({
       where: {
         userId: req.user.id,
         id: expID,
@@ -239,12 +240,23 @@ exports.deleteExp = async (req, res) => {
       include: { model: Duties },
     });
 
-    const experience = myExp[0];
-    await experience.destroy();
+    const [myDutiesDelete] = await Duties.findAll({
+      where: {
+        experienceId: expID,
+        userId: req.user.id,
+      },
+    });
+
+    if (myDutiesDelete) {
+      await myDutiesDelete.destroy();
+    }
+    await myExp.destroy();
 
     res.status(204).json({
       status: 'Success',
       message: 'Deleted',
+      data: myExp,
+      dutyData: myDutiesDelete,
     });
   } catch (error) {
     console.log(error);

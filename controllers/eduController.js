@@ -137,25 +137,24 @@ exports.getEducation = async (req, res) => {
   }
 };
 
-exports.deleteProject = async (req, res) => {
-  const projID = +req.params.id;
+exports.deleteEducation = async (req, res) => {
+  const educID = +req.params.id;
   try {
-    const [myEducation] = await req.user.getProjects({
-      where: { id: projID },
-      include: { model: TechUsed },
+    const myEducation = await Educations.findOne({
+      where: { id: educID, userId: req.user.id },
     });
 
     await myEducation.destroy();
 
     res.status(204).json({
       status: 'Success',
-      message: 'deleted project',
+      message: 'Deleted Education',
     });
   } catch (error) {
     console.log(error);
     res.status(404).json({
       status: 'Fail',
-      message: 'Cannot delete Project',
+      message: 'Cannot Delete Education',
     });
   }
 };

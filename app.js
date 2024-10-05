@@ -78,8 +78,10 @@ Duties.belongsTo(Users);
 Users.hasMany(Projects);
 Projects.belongsTo(Users);
 
+Users.hasMany(TechUsed);
 Projects.hasMany(TechUsed);
 TechUsed.belongsTo(Projects);
+TechUsed.belongsTo(Users);
 
 Users.hasMany(Educations);
 Educations.belongsTo(Users);
