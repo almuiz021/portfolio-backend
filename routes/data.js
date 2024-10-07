@@ -15,9 +15,10 @@ router
     dataControllers.getAllData,
   );
 
-// router
-//   .route('/:id') // User No
-//   .get(dataControllers.getAllUserData);
+router
+  .route('/hosting') // User No
+  .patch(authControllers.protect, dataControllers.updateHosting)
+  .get(authControllers.protect, dataControllers.getHosting);
 
 router
   .route('/:username') // userName

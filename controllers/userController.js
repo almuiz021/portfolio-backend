@@ -1,4 +1,11 @@
 const Users = require('../models/users');
+const jwt = require('jsonwebtoken');
+
+const signToken = id => {
+  return jwt.sign({ id }, process.env.JWT_SECRET_TOKEN, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+};
 
 // /api/test/users
 exports.getAllUsers = async (req, res, next) => {
@@ -77,12 +84,31 @@ exports.checkUserExists = async (req, res, next, val) => {
 };
 
 // /api/test/users/muiz
-exports.getUserbyName = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    route: 'getUserbyName',
-    data: req.user,
-  });
+exports.getUserbyName = async (req, res) => {
+  const username = req.params.username;
+  console.log(username);
+  try {
+    const user = await Users.findAll({ where: { username } });
+
+    if (!user) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'User Not Found',
+      });
+    }
+
+    return res.status(200).json({
+      status: 'success',
+      route: 'getUserbyName',
+      data: user,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Server error',
+    });
+  }
 };
 
 exports.updateUser = async (req, res) => {
@@ -104,17 +130,19 @@ exports.updateUser = async (req, res) => {
     user.first_name = first_name || user.first_name;
     user.last_name = last_name || user.last_name;
     user.username = username || user.username;
-    user.password = password || user.password;
     user.email = email || user.email;
 
     const updatedUser = await user.save();
 
+    const token = signToken(updatedUser.id);
+
     res.status(200).json({
       status: 'success',
       data: updatedUser,
+      token: token, // Return the new token
     });
   } catch (error) {
-    console.log(error);
+    console.error('Update User Error:', error);
     res.status(500).json({
       status: 'error',
       message: 'Server error',
@@ -123,14 +151,35 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
-  const user = req.user;
+  try {
+    // Find the user by username
+    const user = req.user;
 
-  await user.destroy();
+    // If user is not found
+    if (!user) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'User not found',
+      });
+    }
 
-  res.status(204).json({
-    status: 'Success',
-    message: 'User Deleted',
-  });
+    // Delete the user
+
+    // console.log(user);
+    await user.destroy();
+
+    // Respond with success message
+    res.status(204).json({
+      status: 'success',
+      message: 'User deleted successfully',
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Server error',
+    });
+  }
 };
 
 // /api/test/users/1

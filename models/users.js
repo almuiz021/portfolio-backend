@@ -26,6 +26,16 @@ const Users = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    port_no: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+    },
+    is_hosting: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
     role: {
       type: DataTypes.ENUM('user', 'admin'),
       allowNull: false,
@@ -40,7 +50,7 @@ const Users = sequelize.define(
         }
       },
       beforeUpdate: async user => {
-        if (user.password) {
+        if (user.changed('password')) {
           user.password = await bcrypt.hash(user.password, 12);
         }
       },

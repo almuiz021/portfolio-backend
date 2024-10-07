@@ -13,13 +13,14 @@ router
     authController.restrictTo('admin', 'vice-admin'),
     userController.getAllUsers,
   ) //
-  .post(authController.protect, userController.createUser);
+  .patch(authController.protect, userController.updateUser)
+  .post(authController.protect, userController.createUser)
+  .delete(authController.protect, userController.deleteUser);
 
 router
-  .route('/:id')
-  .get(userController.getUserbyName)
-  .patch(authController.protect, userController.updateUser)
-  .delete(authController.protect, userController.deleteUser);
+  .route('/:username')
+  .get(authController.protect, userController.getUserbyName)
+  .patch(authController.protect, userController.updateUser);
 
 // router.route('/:id').get(userController.getUser);
 
