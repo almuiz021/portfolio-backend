@@ -62,7 +62,6 @@ exports.update_createExp = async (req, res) => {
 
       let existingExp;
 
-      // If ID exists, find the experience and update, otherwise create a new one
       if (id) {
         existingExp = await Experience.findOne({
           where: {
@@ -72,7 +71,6 @@ exports.update_createExp = async (req, res) => {
         });
 
         if (existingExp) {
-          // Update the existing experience
           existingExp.companyName = companyName || existingExp.companyName;
           existingExp.started = started || existingExp.started;
           existingExp.finished = finished || existingExp.finished;
@@ -81,7 +79,6 @@ exports.update_createExp = async (req, res) => {
           await existingExp.save();
         }
       } else {
-        // Create a new experience if no ID is provided
         existingExp = await Experience.create({
           companyName,
           started,
@@ -91,7 +88,6 @@ exports.update_createExp = async (req, res) => {
         });
       }
 
-      // Handle duties: Update existing ones and create new ones if no ID
       if (duties && duties.length > 0) {
         for (const dutyObj of duties) {
           let myDuty;
@@ -104,14 +100,12 @@ exports.update_createExp = async (req, res) => {
               },
             });
 
-            // Update existing duty
             if (myDuty) {
               await myDuty.update({
                 duty: dutyObj.duty,
               });
             }
           } else {
-            // Create new duty if no ID is provided
             await Duties.create({
               duty: dutyObj.duty,
               experienceId: existingExp.id,
@@ -122,7 +116,6 @@ exports.update_createExp = async (req, res) => {
       }
     }
 
-    // Fetch the updated experience list
     const updatedExper = await Experience.findAll({
       where: { userId: req.user.id },
       include: { model: Duties },

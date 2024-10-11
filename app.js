@@ -25,6 +25,7 @@ const Projects = require('./models/projects');
 const Home = require('./models/home');
 const Experience = require('./models/experience');
 const Educations = require('./models/education');
+const ContactUs = require('./models/contactUs');
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/users');
@@ -38,6 +39,7 @@ const projectsRoutes = require('./routes/projectsRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const checkCredRoutes = require('./routes/checkCredRoutes');
 const educationRoutes = require('./routes/educationRoutes');
+const contactUsRoutes = require('./routes/contactUsRoutes');
 
 app.use(express.json());
 app.use(morgan('dev'));
@@ -54,6 +56,7 @@ app.use('/api/test/projects', projectsRoutes);
 app.use('/api/test/education', educationRoutes);
 app.use('/api/test/contactme', contactRoutes);
 app.use('/api/test/checkcreds', checkCredRoutes);
+app.use('/api/test/contactus', contactUsRoutes);
 
 Users.hasOne(Home);
 Home.belongsTo(Users);
