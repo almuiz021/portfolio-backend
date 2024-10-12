@@ -20,10 +20,10 @@ exports.getContactUs = async (req, res) => {
 };
 
 exports.createContactUs = async (req, res) => {
-  const { phoneNo, emailAddress, message } = req.body;
+  const { name, emailAddress, message } = req.body;
   try {
-    await ContactUs.create({
-      phoneNo,
+    const contactUsData = await ContactUs.create({
+      name,
       emailAddress,
       message,
     });
@@ -31,7 +31,7 @@ exports.createContactUs = async (req, res) => {
     return res.status(200).json({
       status: 'Success',
       message: 'Created Contact Us',
-      data: contactMeData,
+      data: contactUsData,
     });
   } catch (error) {
     console.log(error);
