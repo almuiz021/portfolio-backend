@@ -4,13 +4,27 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 
 const corsOptions = {
-  origin: 'https://foliofy.netlify.app',
-  // origin: 'http://localhost:5173',
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      'https://foliofy.in',
+      'https://foliofy.netlify.app',
+      'http://localhost:5173',
+      'http://localhost:4173',
+    ];
+
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+
   credentials: true,
 };
 
 const app = express();
 app.use(cors(corsOptions));
+
 const sequelize = require('./utils/database');
 
 dotenv.config({ path: './config.env' });
