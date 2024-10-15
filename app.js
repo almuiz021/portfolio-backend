@@ -95,8 +95,8 @@ ContactMe.belongsTo(Users);
 const port = process.env.PORT;
 
 sequelize
-  .sync()
-  // .sync({ alter: true })
+  // .sync()
+  .sync({ alter: true })
   // .sync({ force: true })
   .then(user => {
     console.log('Connected Successfully');
