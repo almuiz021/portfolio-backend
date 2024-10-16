@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const https = require('https');
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -107,6 +108,10 @@ Educations.belongsTo(Users);
 Users.hasOne(ContactMe);
 ContactMe.belongsTo(Users);
 
+app.get('/ping', (req, res) => {
+  res.status(200).send('pong');
+});
+
 const port = process.env.PORT;
 
 sequelize
@@ -120,3 +125,22 @@ sequelize
   .catch(err => {
     console.log(err);
   });
+
+const SERVER_URL = 'https://portfolio-backend-g960.onrender.com/ping';
+
+const keepAlive = () => {
+  https
+    .get(SERVER_URL, res => {
+      console.log(`Pinged server. Status code: ${res.statusCode}`);
+    })
+    .on('error', err => {
+      console.error(`Error pinging server: ${err.message}`);
+    });
+};
+
+const KEEP_ALIVE_INTERVAL = 14 * 60 * 1000; // 14 minutes = 840,000 ms
+
+// Schedule Keep-Alive Pings Every 14 Minutes
+setInterval(keepAlive, KEEP_ALIVE_INTERVAL);
+
+keepAlive();
