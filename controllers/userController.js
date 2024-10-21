@@ -127,19 +127,24 @@ exports.updateUser = async (req, res) => {
       }
     }
 
-    user.first_name = first_name || user.first_name;
-    user.last_name = last_name || user.last_name;
-    user.username = username || user.username;
-    user.email = email || user.email;
+    const updatedUser = await Users.update(
+      {
+        first_name: first_name || user.first_name,
+        last_name: last_name || user.last_name,
+        username: username || user.username,
+        email: email || user.email,
+      },
+      {
+        where: { id: user.id },
+      },
+    );
 
-    const updatedUser = await user.save();
-
-    const token = signToken(updatedUser.id);
+    // const token = signToken(updatedUserData.id);
+    const myUpdatedUser = await Users.findByPk(user.id);
 
     res.status(200).json({
       status: 'success',
-      data: updatedUser,
-      token: token, // Return the new token
+      data: myUpdatedUser,
     });
   } catch (error) {
     console.error('Update User Error:', error);
