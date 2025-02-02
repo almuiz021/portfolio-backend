@@ -139,6 +139,6 @@ dist
 # SvelteKit build / generate output
 .svelte-kit
 
-config.env
+.config.env
 
 trash/
