@@ -9,8 +9,6 @@ const corsOptions = {
     const allowedOrigins = [
       'https://foliofy.in',
       'https://foliofy.netlify.app',
-      'http://localhost:5173',
-      'http://localhost:4173',
     ];
 
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
@@ -126,8 +124,6 @@ sequelize
     console.log(err);
   });
 
-const SERVER_URL = 'https://portfolio-backend-g960.onrender.com/ping';
-
 const keepAlive = () => {
   https
     .get(SERVER_URL, res => {
@@ -138,9 +134,8 @@ const keepAlive = () => {
     });
 };
 
-const KEEP_ALIVE_INTERVAL = 14 * 60 * 1000; // 14 minutes = 840,000 ms
+const KEEP_ALIVE_INTERVAL = 14 * 60 * 1000;
 
-// Schedule Keep-Alive Pings Every 14 Minutes
 setInterval(keepAlive, KEEP_ALIVE_INTERVAL);
 
 keepAlive();
